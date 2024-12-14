@@ -1,0 +1,39 @@
+# Version: 1.0.0
+# Should be placed one level up
+services:
+  adonisjs:
+    build:
+      context: ./geo_welding_api
+      target: dependencies
+    working_dir: /app/
+    volumes:
+      - ./adonisjsDumdy/:/app
+    ports:
+      - ${ADONIS_PORT}:${ADONIS_PORT}
+      - 9229:9229
+      - 24678:24678
+    # command: ping 8.8.8.8
+    command: sleep infinity
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel notice --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - cache:/data
+  mysql:
+    image: mysql
+    restart: always
+    volumes:
+      - ./mysql/:/var/lib/mysql
+    environment:
+      - MYSQL_USER=$MYSQL_USER
+      - MYSQL_PASSWORD=$MYSQL_PASSWORD
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - REDIS_PASSWORD=@REDIS_PASSWORD
+    ports:
+      - "3307:3306"
+volumes:
+  cache:
+    driver: local

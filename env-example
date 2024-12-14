@@ -1,0 +1,10 @@
+# Mysql Root password
+MYSQL_USER=
+MYSQL_PASSWORD=
+MYSQL_ROOT_PASSWORD=
+
+# Redis
+REDIS_PASSWORD=
+
+# Adonis
+ADONIS_PORT=3333
