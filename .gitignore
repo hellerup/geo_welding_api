@@ -97,6 +97,9 @@ dist
 # https://nextjs.org/blog/next-9-1#public-directory-support
 # public
 
+# Frontend assets compiled code
+public/assets
+
 # vuepress build output
 .vuepress/dist
 
@@ -128,3 +131,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Secrets
+.env
+.env.local
+.env.production.local
+.env.development.local
