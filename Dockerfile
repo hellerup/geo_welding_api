@@ -1,31 +1,30 @@
-# Use a Debian-based Node.js image to enable apt
-ARG NODE_IMAGE=node:22
+FROM node:22 AS base
 
-# Base stage
-FROM $NODE_IMAGE AS base
-# Update apt and install dumb-init using apt
+# All deps stage
+FROM base AS deps
+WORKDIR /app
 RUN apt-get update && apt-get install -y dumb-init && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /home/node/app && chown node:node /home/node/app
-WORKDIR /home/node/app
-RUN mkdir tmp
-
-# Dependencies stage
-FROM base AS dependencies
-COPY --chown=node:node ./package*.json ./
+ADD package.json package-lock.json ./
 RUN npm ci
-COPY --chown=node:node . .
+
+# Production only deps stage
+FROM base AS production-deps
+WORKDIR /app
+ADD package.json package-lock.json ./
+RUN npm ci --omit=dev
 
 # Build stage
-FROM dependencies AS build
-RUN node ace build --production
+FROM base AS build
+WORKDIR /app
+COPY --from=deps /app/node_modules /app/node_modules
+ADD . .
+RUN node ace build
 
 # Production stage
-FROM base AS production
+FROM base
 ENV NODE_ENV=production
-ENV PORT=$ADONIS_PORT
-ENV HOST=0.0.0.0
-COPY --chown=node:node ./package*.json ./
-COPY --chown=node:node --from=build /home/node/app/build .
-EXPOSE $PORT
-USER node
-CMD ["dumb-init", "node", "server.js"]
+WORKDIR /app
+COPY --from=production-deps /app/node_modules /app/node_modules
+COPY --from=build /app/build /app
+EXPOSE 8080
+CMD ["node", "./bin/server.js"]
