@@ -9,6 +9,7 @@ export default class extends BaseSchema {
       table.integer('task_id').unsigned().references('id').inTable('tasks').onDelete('CASCADE')
       table.decimal('latitude', 12, 10)
       table.decimal('longitude', 12, 10)
+      table.boolean('handled')
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

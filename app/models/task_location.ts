@@ -19,6 +19,9 @@ export default class TaskLocation extends BaseModel {
   @column()
   declare taskId: unknown | null
 
+  @column()
+  declare handled: boolean | null
+
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 

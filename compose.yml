@@ -1,19 +1,17 @@
-# Version: 1.0.0
-# Should be placed one level up
 services:
   adonisjs:
     build:
       context: ./geo_welding_api
       target: dependencies
-    working_dir: /app/
+    working_dir: /home/node/app/
     volumes:
       - ./adonisjsDumdy/:/app
     ports:
       - ${ADONIS_PORT}:${ADONIS_PORT}
       - 9229:9229
       - 24678:24678
-    # command: ping 8.8.8.8
-    command: sleep infinity
+    # command: sleep infinity
+    command: npm run dev
   redis:
     image: redis:7
     restart: always
