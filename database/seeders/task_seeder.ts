@@ -47,7 +47,7 @@ export default class extends BaseSeeder {
         longitude: 5.6789
       },
       {
-        task_id: 3,
+        taskId: 3,
         latitude: 6.789,
         longitude: 6.789
       },
