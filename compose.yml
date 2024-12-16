@@ -2,16 +2,30 @@ services:
   adonisjs:
     build:
       context: ./geo_welding_api
-      target: dependencies
-    working_dir: /home/node/app/
-    volumes:
-      - ./adonisjsDumdy/:/app
+      target: development
+    working_dir: /app/
+    # volumes:
+    #   - ./adonisjsDumdy/:/app
+    environment:
+      - POSTGRES_PASSWORD=$DB_ROOT_PASSWORD
+      - DB_DATABASE=$DB_DATABASE
+      - DB_HOST=$DB_HOST
+      - DB_USER=$DB_USER
+      - DB_PORT=$DB_PORT
+      - DB_PASSWORD=$DB_PASSWORD
+      - POSTGRES_PASSWORD=$DB_ROOT_PASSWORD
+      - NODE_ENV=$NODE_ENV
+      - APP_KEY=$APP_KEY
+      - HOST=$HOST
+      - LOG_LEVEL=$LOG_LEVEL
+      - PORT=$ADONIS_PORT
+      - TZ=$ADONIS_TZ
     ports:
       - ${ADONIS_PORT}:${ADONIS_PORT}
       - 9229:9229
       - 24678:24678
-    # command: sleep infinity
-    command: npm run dev
+    command: sleep infinity
+    # command: npm run dev
   redis:
     image: redis:7
     restart: always
@@ -20,18 +34,20 @@ services:
     command: redis-server --save 20 1 --loglevel notice --requirepass ${REDIS_PASSWORD}
     volumes:
       - cache:/data
-  mysql:
-    image: mysql
+  db:
+    image: postgres
     restart: always
     volumes:
-      - ./mysql/:/var/lib/mysql
+      - ./db/:/var/lib/postgresql/data
     environment:
-      - MYSQL_USER=$MYSQL_USER
-      - MYSQL_PASSWORD=$MYSQL_PASSWORD
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-      - REDIS_PASSWORD=@REDIS_PASSWORD
+      - POSTGRES_PASSWORD=$DB_ROOT_PASSWORD
+      - DB_DATABASE=$DB_DATABASE
+      - DB_HOST=$DB_HOST
+      - DB_USER=$DB_USER
+      - DB_PORT=$DB_PORT
+      - DB_PASSWORD=$DB_PASSWORD
     ports:
-      - "3307:3306"
+      - "${DB_PORT}:5432"
 volumes:
   cache:
     driver: local
